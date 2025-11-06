@@ -39,9 +39,9 @@ describe("App", () => {
     fireEvent.change(inputNumber, { target: { value: 5 } });
     fireEvent.click(addButton);
 
-    await waitFor(() => {
-      expect(list).toHaveTextContent(/テストタスクス/);
-      expect(list).toHaveTextContent(/5時間/);
+    await waitFor(async () => {
+      await expect(list).toHaveTextContent(/テストタスクス/);
+      await expect(list).toHaveTextContent(/5時間/);
     });
   });
 
