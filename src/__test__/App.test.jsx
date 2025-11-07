@@ -45,21 +45,33 @@ describe("App", () => {
     expect(timeItem).toBeInTheDocument();
   });
 
-  // test("削除ボタンを押すと学習記録が削除される", async () => {
-  //   render(<App />);
+  test("削除ボタンを押すと学習記録が削除される", async () => {
+    render(<App />);
 
-  //   const itemsBefore = await screen.findAllByRole("listitem");
-  //   const deleteButtons = await screen.findAllByRole("button", {
-  //     name: /削除/,
-  //   });
+    const inputText = screen.getByLabelText("学習内容");
+    const inputNumber = screen.getByLabelText(/学習時間/);
+    const addButton = screen.getByRole("button", { name: /登録/ });
 
-  //   fireEvent.click(deleteButtons[0]);
+    fireEvent.change(inputText, { target: { value: "削除タスク" } });
+    fireEvent.change(inputNumber, { target: { value: 7 } });
+    fireEvent.click(addButton);
 
-  //   await waitFor(async () => {
-  //     const itemsAfiter = await screen.findAllByRole("listitem");
-  //     expect(itemsAfiter.length).toBe(itemsBefore.length - 1);
-  //   });
-  // });
+    const taskItem = await screen.findByText(/削除タスク/);
+    const timeItem = await screen.findByText(/7時間/);
+    const deleteButtonn = await screen.findByText(/削除/);
+
+    expect(taskItem).toBeInTheDocument();
+    expect(timeItem).toBeInTheDocument();
+    expect(deleteButtonn).toBeInTheDocument();
+
+    fireEvent.click(deleteButtonn);
+
+    await waitFor(() => {
+      expect(screen.queryByText("削除タスク")).toBeNull();
+      expect(screen.queryByText("7時間")).toBeNull();
+      expect(screen.queryByRole("button", { name: "削除" })).toBeNull();
+    });
+  });
 
   test("入力をしないで登録を押すとエラーが表示される", () => {
     render(<App />);
